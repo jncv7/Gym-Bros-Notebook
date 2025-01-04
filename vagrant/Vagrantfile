@@ -3,7 +3,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/bionic64"
   
   # Configure the VM's network for private networking
-  config.vm.network "private_network", type: "dhcp"
+  # config.vm.network "private_network", type: "dhcp"
 
   # Allocate 2GB of RAM (adjust as needed)
   config.vm.provider "virtualbox" do |vb|
