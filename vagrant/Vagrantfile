@@ -1,0 +1,50 @@
+Vagrant.configure("2") do |config|
+  # Use Ubuntu 20.04 as the base box
+  config.vm.box = "ubuntu/bionic64"
+  
+  # Configure the VM's network for private networking
+  config.vm.network "private_network", type: "dhcp"
+
+  # Allocate 2GB of RAM (adjust as needed)
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "2048"
+  end
+
+  # Provision the VM with the required tools and packages
+  config.vm.provision "shell", inline: <<-SHELL
+    # Update package list
+    sudo apt-get update -y
+    
+    # Install Python 3, pip, and virtualenv
+    sudo apt-get install -y python3 python3-pip python3-venv
+
+    # Install PostgreSQL and necessary extensions
+    sudo apt-get install -y postgresql postgresql-contrib libpq-dev
+
+    # Install Git (optional, but useful for version control)
+    sudo apt-get install -y git
+
+    # Install required Python packages globally (for system-wide use)
+    sudo pip3 install psycopg2
+
+    # Create a new user for PostgreSQL (to match Django settings)
+    sudo -u postgres psql -c "CREATE USER workout_user WITH PASSWORD 'your_password';"
+    sudo -u postgres psql -c "CREATE DATABASE workout_db OWNER workout_user;"
+    sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE workout_db TO workout_user;"
+
+    # Install PostgreSQL Python adapter for Django (psycopg2)
+    sudo pip3 install psycopg2
+
+    # Install Django globally
+    sudo pip3 install django
+
+    # Install other useful packages
+    sudo pip3 install django-crispy-forms
+  SHELL
+
+  # Optional: You can share a folder between your host and the guest VM for easy file syncing
+  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+
+  # Forward port 8000 to access Django locally
+  config.vm.network "forwarded_port", guest: 8000, host: 8000
+end
