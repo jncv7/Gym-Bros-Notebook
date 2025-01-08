@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
   # Set up the VM
   # Configures a private network with DHCP to assign an IP address dynamically 
   # to the VM. Useful for isolating the VM from public networks while allowing host-to-VM communication.
-  config.vm.network "private_network", type: "dhcp"
+  # config.vm.network "private_network", type: "dhcp"
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "2048"
     vb.cpus = 2
