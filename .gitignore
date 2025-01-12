@@ -28,3 +28,4 @@ dist-ssr
 
 #screts
 .env
+settings.py
